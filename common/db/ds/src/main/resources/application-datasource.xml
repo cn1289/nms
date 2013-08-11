@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mf4_ctx.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:lang="http://www.springframework.org/schema/lang"
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+				http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.1.xsd">
+
+
+
+  <!-- 依赖的服务属性配置器，从指定的属性文件中读取信息 -->
+  <bean
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
+    <property name="locations">
+      <list>
+        <value>classpath:database.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- 数据库相关配置，c3p0方式：(用于生产应用) -->
+  <!-- 属性initialPoolSize: 启动服务器时建立的连接数量及当连接不够时增长的数量，生产环境建议加大 -->
+  <!-- 属性maxPoolSize：最大连接数，生产环境建议加大 -->
+  <!-- 属性minPoolSize：最小连接数，生产环境建议加大 -->
+  <!-- 属性acquireIncrement：在当前连接数耗尽的时候，一次获取的新的连接数 -->
+  <!-- 属性maxIdleTime： 最大空闲的时间，单位是秒，无用的链接在过时后会被回收,若为0则永不丢弃 -->
+  <!-- 属性idleConnectionTestPeriod: 每60秒检查所有连接池中的空闲连接。 -->
+  <!-- 属性checkoutTimeout:当连接池用完时客户端调用getConnection()后等待获取新连接的时间, -->
+  <!-- 超时后将抛出SQLException,如设为0则无限期等待。单位毫秒。 -->
+  <!-- 属性maxStatements:数据源内加载的PreparedStatements数量,为0，则缓存被关闭 -->
+  <!-- -->
+  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+    destroy-method="close">
+    <property name="driverClass" value="${app.db.driver}" />
+    <property name="jdbcUrl" value="${app.db.url}" />
+    <property name="user" value="${app.db.user}" />
+    <property name="password" value="${app.db.pwd}" />
+    <property name="initialPoolSize" value="${db.pool.init}" />
+    <property name="minPoolSize" value="${db.pool.min}" />
+    <property name="maxPoolSize" value="${db.pool.max}" />
+    <property name="acquireIncrement" value="${db.pool.incr}" />
+    <property name="checkoutTimeout" value="${db.pool.ctimeout}" />
+    <property name="idleConnectionTestPeriod" value="${db.pool.ictp}" />
+    <property name="maxIdleTime" value="${db.pool.maxidle}" />
+    <property name="maxStatements" value="${db.pool.maxstmt}" />
+    <property name="breakAfterAcquireFailure" value="false" />
+    <property name="loginTimeout" value="15" />
+  </bean>
+
+</beans>
